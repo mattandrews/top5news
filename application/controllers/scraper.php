@@ -54,12 +54,20 @@ class Scraper extends CI_Controller {
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'dailymail') {
-			$list = $html->find('div[id=r0c1p35-2] ul li');
-			foreach($list as $item) {
+
+			$list = $html->find('div.site-most-read div', 0);
+			$list = $list->find('div', 1);
+			foreach($list->find('div.article') as $key=>$item) {
+				$thing = $item->find('h2');
+				$thing = $thing[0];
 				$prefix = 'http://www.dailymail.co.uk';
-				$link = $prefix . $item->find('a', 0)->href;
-				$headline = trim(strip_tags($item->find('a', 0)->innertext));
+				$link = $prefix . $thing->find('a', 0)->href;
+				$headline = trim(strip_tags($thing->find('a', 0)->innertext));
 				$image = NULL;
+				$image = $item->find('img', 0);
+				if($image) {
+					$image = $image->src;
+				}
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'telegraph') {
@@ -111,15 +119,19 @@ class Scraper extends CI_Controller {
 				$image = NULL;
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
-		} elseif($site === 'sky') {
-			$div = $html->find('div[id=navTeaser] div.promoSlotRight div.module_body', 0);
-			$list = $div->find('ul li');
-			foreach($list as $item) {
-				$prefix = 'http://news.sky.com';
-				$link = $prefix . $item->find('a', 0)->href;
-				$headline = trim($item->find('a', 0)->innertext);
-				$image = NULL;
-				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+		} elseif($site === 'ft') {
+			$headings = $html->find('h3.railComponentHeading');
+			foreach($headings as $heading) {
+				$heading_text = trim($heading->innertext);
+				if($heading_text === "Most popular") {
+					$list = $heading->next_sibling();
+					foreach($list->find('li') as $item) {
+						$link = $item->find('a', 0)->href;
+						$headline = trim($item->find('a', 0)->innertext);
+						$image = NULL;
+						$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+					}
+				}
 			}
 		}
 		

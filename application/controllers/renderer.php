@@ -11,7 +11,7 @@ class Renderer extends CI_Controller {
                 JOIN sources ON news1.source_id = sources.source_id
                 GROUP BY news1.id
                 HAVING COUNT(*) < 5
-                ORDER BY news1.source_id, created DESC";
+                ORDER BY news1.source_id, rank ASC";
         $news = $this->db->query($sql)->result_array();
         $data['news'] = array();
         

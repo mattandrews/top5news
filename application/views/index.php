@@ -12,7 +12,8 @@
 <body>
     <div id="container">
         <h1>Top 5 News</h1>
-        <p>Click the links below to browse the top 5 most currently-read stories featured on British newspaper websites. Feeds are refreshed hourly.</p>
+        <p>The five most popular stories on the UK's most popular news websites. Feeds are refreshed every 15 minutes.<br />
+        An experiment by <a href="http://www.benjilanyado.com/">Benji Layado</a> and <a href="http://mattandrews.info">Matt Andrews</a>.</p>
         <?php foreach($news as $source=>$stories) {
             echo '<div class="newsbox">';
             echo '<h2 class="' . $stories[0]['source_name'] . '">' . $source;
@@ -20,13 +21,11 @@
             echo '</h2>';
             echo "<ol>";
             foreach($stories as $s) {
-                echo '<li><a href="' . $s['url'] . '">' . $s['headline'] . '</a></li>';
+                echo '<li><a target="_new" href="' . $s['url'] . '">' . $s['headline'] . '</a></li>';
             }
             echo "</ol>";
             echo "</div>";
-            //die;
         } ?>
-        
-        <p>an experiment by <a href="http://www.benjilanyado.com/">Benji Layado</a> and <a href="http://mattandrews.info">Matt Andrews</a>.</p>
+
     </div>
 </body>
