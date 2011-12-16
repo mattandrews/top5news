@@ -23,7 +23,7 @@
     <div id="container">
         <h1>Top 5 News</h1>
         <p>The five most popular stories on the UK's most popular news websites. Feeds are refreshed every 15 minutes.<br />
-        An experiment by <a href="http://www.benjilanyado.com/">Benji Layado</a> and <a href="http://mattandrews.info">Matt Andrews</a>.</p>
+        An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>.</p>
         <?php foreach($news as $source=>$stories) {
             echo '<div class="newsbox">';
             echo '<h2 class="' . $stories[0]['source_name'] . '">' . $source;
