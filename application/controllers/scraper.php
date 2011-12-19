@@ -9,6 +9,10 @@ class Scraper extends CI_Controller {
 	// we can now call it in stages
 	function scrape($offset, $limit) {
 		set_time_limit(180);
+
+		// delete yesterday's news
+		$this->db->query("DELETE FROM news WHERE created < DATE_SUB(NOW(), INTERVAL 1 DAY)");
+
 		$this->load->library('simple_html_dom');
 		
 		$this->db->offset($limit);
