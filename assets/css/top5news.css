@@ -3,39 +3,44 @@ body {
     font-size: 12px;
     line-height: 18px;
     text-align: center;
-    background: #000 url(../img/body_bg.png) repeat-x;
-    color: #efefef;
+    background-color: #FAFBFA;
+    color: #a4a4a4;
 }
 
 #container {
     height: 80%;
-    margin: 20px auto;
+    margin: 20px auto 80px;
     width: 90%;
 }
 
 h1 {
-    font: bold 72px arial;
-    margin: 0 0 10px 0;
+    font: 36px Times, Georgia, "Times New Roman", serif;
+    margin: 0 0 30px 0;
     padding: 0px;
-    color: #666;
-    text-shadow: 0px 2px 3px #000;
+    color: #489cde;
+    text-transform: uppercase;
+    letter-spacing: 8px;
 }
 
 p {
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
+
 .newsbox {
     text-align: left;
     width: 215px;
-    background: #323740 url(../img/box_bg.png) repeat-x;
-    border: 4px solid #8c94a1;
+    background: #fff;
+    border: 1px solid #d2d4d4;
     display: inline-block;
     vertical-align: top;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    -webkit-box-shadow: 0px 3px 5px #333;
-    -moz-box-shadow: 0px 3px 5px #333;
-    box-shadow: 0px 3px 5px #333;
+    margin-right: 40px;
+    margin-bottom: 40px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px 0px #dcdcdc;
+    -moz-box-shadow: 0px 0px 5px 0px #dcdcdc;
+    box-shadow: 0px 0px 5px 0px #dcdcdc;
 }
 
 .newsbox ol {
@@ -45,30 +50,43 @@ p {
     overflow: auto;
 }
 
-
 /* iPad [portrait + landscape] */
+
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-    .newsbox ol { height: auto; }
+
+.newsbox ol {
+    height: auto;
+}
+
 }
 
 /* iPhone [portrait + landscape] */
+
 @media only screen and (max-device-width: 480px) {
-    .newsbox ol { height: auto; }
-    .newsbox { width: 90%; }
+
+.newsbox ol {
+    height: auto;
+}
+
+.newsbox {
+    width: 90%;
+}
+
 }
 
 .newsbox ol li {
     margin: 10px 0 0 0;
     padding: 0px;
-    font: bold 18px/14px arial;
-    color: #8492a5;
+    font: 20px/13px Georgia, Times, "Times New Roman", serif;
+    color: #489cde;
     padding-bottom: 10px;
-    border-bottom: 1px dotted #696d74;
+    border-bottom: 1px solid #cbcbc5;
 }
 
 a {
-    color: #bdc7d6;
-    font: bold 12px/18px arial;
+    color: #4d4d4d;
+    font: 12px/18px arial;
+    text-decoration: none;
 }
 
 .newsbox li a {
@@ -76,34 +94,61 @@ a {
 }
 
 a:hover {
-    color: #dfe2ff;
+    color: #489cde;
 }
 
 .newsbox h2 {
     display: block;
     padding: 0px;
-    background: #8c94a1;
-    background-repeat: no-repeat;
-    border-bottom: 3px solid #8c94a1;
+    padding-top: 10px;
     margin: 0px;
-    padding: 0px;
-    padding-left: 18px;
+    padding-left: 32px;
+    padding-bottom: 15px;
     font: bold 14px arial;
-    color: #dfe2ff;
+    color: #070707;
+    border-bottom: 1px solid #cfcfcf;
+    background: #fcfcfc no-repeat;
+    text-shadow: 1px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=1);
 }
 
 .newsbox h2 span {
-    font: normal 11px arial;
-    color: #bdc7d6;
+    font: normal 10px Arial;
+    color: #6e6e6f;
     float: right;
+    margin-right: 5px;
+    letter-spacing: 0;
+    margin-top: 4px;
 }
 
-h2.guardian { background-image: url(../img/icons/guardian.png); }
-h2.bbc { background-image: url(../img/icons/bbc.png); }
-h2.guardian { background-image: url(../img/icons/guardian.png); }
-h2.independent { background-image: url(../img/icons/independent.png); }
-h2.dailymail { background-image: url(../img/icons/mail.png); }
-h2.themirror { background-image: url(../img/icons/mirror.png); }
-h2.sky { background-image: url(../img/icons/sky.png); }
-h2.thesun { background-image: url(../img/icons/sun.png); }
-h2.telegraph { background-image: url(../img/icons/telegraph.png); }
+h2.guardian {
+    background: #e6e6e6 url(../img/icons/guardian.png) no-repeat 8px 8px;
+}
+
+h2.bbc {
+    background: #e6e6e6 url(../img/icons/bbc.png) no-repeat 8px 8px;
+}
+
+h2.independent {
+    background: #e6e6e6 url(../img/icons/independent.png) no-repeat 8px 8px;
+}
+
+h2.dailymail {
+    background: #e6e6e6 url(../img/icons/mail.png) no-repeat 8px 8px;
+}
+
+h2.themirror {
+    background: #e6e6e6 url(../img/icons/mirror.png) no-repeat 8px 8px;
+}
+
+h2.ft {
+    background: #e6e6e6 url(../img/icons/ft.png) no-repeat 8px 8px;
+}
+
+h2.thesun {
+    background: #e6e6e6 url(../img/icons/sun.png) no-repeat 8px 8px;
+}
+
+h2.telegraph {
+    background: #e6e6e6 url(../img/icons/telegraph.png) no-repeat 8px 8px;
+}
