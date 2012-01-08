@@ -7,22 +7,27 @@ class Scraper extends CI_Controller {
 	}
 
 	// we can now call it in stages
-	function scrape($offset, $limit) {
-		set_time_limit(180);
+	function scrape($limit, $offset) {
+		set_time_limit(15 * 60);
 
 		// delete yesterday's news
 		$this->db->query("DELETE FROM news WHERE created < DATE_SUB(NOW(), INTERVAL 1 DAY)");
 
 		$this->load->library('simple_html_dom');
 		
-		$this->db->offset($limit);
-		$this->db->limit($offset);
+		$this->db->offset($offset);
+		$this->db->limit($limit);
 		$sites = $this->db->get('sources')->result_array();
 
 		foreach($sites as $site) {
 			$html = file_get_html($site['source_url']);
 			$stories = $this->_filter_out_headlines($site['source_name'], $html);
 			$this->_add_stories_to_db($stories, $site['source_id']);
+		}
+
+		// bit hacky, what if we add more rows? could do with being dynamic at some point
+		if($offset == 4) {
+			$this->update_top_positions();
 		}
 		
 		echo "all done!";
@@ -39,6 +44,7 @@ class Scraper extends CI_Controller {
 				'thumbnail' => $story['image']
 			);
 			$this->db->insert('news', $news);
+			$this->db->insert('news_archive', $news);
 			$rank++;
 		}
 	}
@@ -141,5 +147,87 @@ class Scraper extends CI_Controller {
 		
 		$stories = array_slice($stories, 0, 5); // only keep 5 items
 		return $stories;
+	}
+
+	function update_top_positions() {
+		$this->db->group_by('source_id');
+		$this->db->order_by('created DESC');
+		$this->db->select('url, source_id, created');
+		$top_stories = $this->db->get_where('news', array('rank' => 1))->result_array();
+		foreach($top_stories as $story) {
+			$s = array('source_id' => $story['source_id'], 'story_id' => $story['url'], 'date_created' => $story['created']);
+			$this->db->insert('top_story_history', $s);
+		}
+
+		$this->find_eligible_tweets();
+
+	}
+
+	function find_eligible_tweets() {
+		
+		// first get the top stories for past 24 hours
+		$this->db->order_by('source_id, date_created DESC');
+		$all_top_stories = $this->db->get('top_story_history')->result_array();
+
+		$story_counts = array();
+		$current_top_stories = array();
+		$last_top_story = NULL;
+		$stories_to_tweet = array();
+
+		// now pull out the newest top story and save the rest in an array
+		foreach($all_top_stories as $s) {
+			// bit ugly, removes the first row, which is the newest story (that we want to compare to this list)
+			if($last_top_story != $s['source_id']) {
+				$current_top_stories[] = $s;
+			} else {
+				$story_counts[$s['source_id']][] = $s['story_id'];
+			}
+			$last_top_story = $s['source_id'];
+		}
+
+		// find stories that haven't been #1 EVER
+		foreach($current_top_stories as $s) {
+			// if the story hasn't been in the top 5 for its source in the last day, then we tweet it
+			if(isset($story_counts[$s['source_id']])) {
+
+				if(!in_array($s['story_id'], $story_counts[$s['source_id']])) {
+					$stories_to_tweet[] = $s['story_id'];
+				}
+			} else { // there's nothing else in the table, reset?
+				$stories_to_tweet[] = $s['story_id'];
+			}
+		}
+
+		if(!empty($stories_to_tweet)) {
+			// get the details of the stories to tweet
+			$this->db->order_by('created DESC');
+			$this->db->where_in('url', $stories_to_tweet);
+			$tweets = $this->db->get('news_archive')->result_array();
+
+			// now tweet them
+			foreach($tweets as $t) {
+				$link_length = 20; // default for t.co link and spaces etc
+				$headline = $t['headline'] . ': ';
+				$link = $t['url'];
+				$hashtag = ' #top5news';
+				$limit = 140;
+				$headline_and_link = $headline . $link;
+				$headline_and_link_length = count($headline) + $link_length;
+				if ($headline_and_link_length < ($limit - count($hashtag)) ) {
+					$status = $headline_and_link . $hashtag;
+				} else {
+					$status = $headline_and_link;
+				}
+
+				$this->_post_tweet($status);
+			}
+		}
+	}
+
+
+	function _post_tweet($tweet) {
+		require_once('./inc/twitteroauth.php');
+		$connection = new TwitterOAuth('pGZMx40oH6YPZTNkmmADXQ', 'PiaDBDMRnJPCOm66vbhwzZG8TC8VJLGr1x3ptCm6pY', '434395002-tDwIprDLEWyNKbr1vXa8LiLFvloA6P91E28jUgzH', 'PQypy9Z2r67TdCJ9RMnGMhzTQIVuPVUCqq72731bk6k');
+		$connection->post('statuses/update', array('status' => $tweet));
 	}
 }
