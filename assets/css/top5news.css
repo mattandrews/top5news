@@ -31,7 +31,6 @@ p {
 .newsbox {
     text-align: left;
     width: 245px;
-    height: 370px;
     background: #fff;
     border: 1px solid #d2d4d4;
     display: inline-block;
@@ -49,32 +48,8 @@ p {
 .newsbox ol {
     padding: 0px 10px 0 30px;
     margin: 10px;
-    height: 300px;
+    height: 390px;
     overflow: auto;
-}
-
-/* iPad [portrait + landscape] */
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-
-    .newsbox ol {
-        height: auto;
-    }
-
-}
-
-/* iPhone [portrait + landscape] */
-
-@media only screen and (max-device-width: 480px) {
-
-    .newsbox ol {
-        height: auto;
-    }
-
-    .newsbox {
-        width: 90%;
-    }
-
 }
 
 .newsbox ol li {

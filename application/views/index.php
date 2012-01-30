@@ -4,8 +4,12 @@
     <title>Top 5 News | beta v1.0</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
     <meta charset="utf-8" />
-    <link href="<?php echo base_url(); ?>assets/css/top5news.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/top5news.css?v=1" rel="stylesheet" type="text/css" />
+    <?php if($is_mobile) { ?>
+      <link href="<?php echo base_url(); ?>assets/css/mobile.css" rel="stylesheet" type="text/css" />
+    <?php } ?>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-27742277-1']);
@@ -17,37 +21,47 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.7.1.min.js"></script>
 </head>
 
 <body>
     <div id="container">
         <h1>Top 5 News</h1>
         <p>The five most popular stories on the UK's most popular news websites. Feeds are refreshed every 15 minutes.<br />
-        An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>.</p>
+        An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>. Why not <a href="https://twitter.com/Top5NewsUK">follow Top5News on Twitter</a>?</p>
         <?php foreach($news as $source=>$stories) {
+            $source_name = $stories[0]['source_name'];
             echo '<div class="newsbox';
-            if($stories[0]['source_name'] == 'meta') {
+            if($source_name == 'meta') {
                 echo ' metabox';
             }
             echo '">';
-            echo '<h2 class="' . $stories[0]['source_name'] . '">' . $source;
+            echo '<h2 class="' . $source_name . '">';
+            if($source == 'meta') {
+              echo "Top 5 Top 5";
+            } else {
+              echo $source;
+            }
             echo '<span title="' . date('l jS F Y (g:ia)', strtotime($stories[0]['created'])) . '">~' . $this->prettydate->getStringResolved($stories[0]['created']) . '</span>';
             echo '</h2>';
             echo "<ol>";
             foreach($stories as $s) {
-                if($is_mobile) {
-                    $headline = $s['headline'];
-                } else {
-                    $headline = word_limiter($s['headline'], 8);
+                $headline = $s['headline'];
+                if($source_name == 'meta') {
+                  $headline = ' <strong>' . $s['full_name'] . '</strong>: ' . $headline;
                 }
+                if(!$is_mobile) {
+                    $headline = character_limiter($headline, 80);
+                }
+
+
                 echo '<li><a data-id="'.$s['id'].'" target="_new" href="' . $s['url'] . '" title="'.$s['headline'].'">' . $headline . '</a></li>';
             }
             echo "</ol>";
             echo "</div>";
         } ?>
 
-        <p>Additional design by <a href="http://www.twitter.com/lawrencebrown">Lawrence Brown</a>. <a href="mailto:top5newsuk@gmail.com" id="contact-us">Contact us?</a> Or why not <a id="go-meta" href="javascript://">go meta</a>.</p>
+        <p>Additional design by <a href="http://www.twitter.com/lawrencebrown">Lawrence Brown</a>. Want to <a href="mailto:top5newsuk@gmail.com" id="contact-us">contact us?</a><br /> Or why not read the <a id="go-meta" href="javascript://">Top 5 Top 5</a>. Follow us at <a href="https://twitter.com/Top5NewsUK">@Top5NewsUK</a>.</p>
 
         <form action="<?php echo site_url('renderer/email'); ?>" id="email-form" method="post">
             <label>Your name</label>

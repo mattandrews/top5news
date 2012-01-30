@@ -4,6 +4,7 @@ class Renderer extends CI_Controller {
     
     function index() {
         $this->output->cache(15); // 15 min cache. yay
+        //$this->output->enable_profiler();
 
         $this->load->library('prettydate');
         $this->load->helper(array('mobile', 'text'));

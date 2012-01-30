@@ -27,7 +27,7 @@ class Scraper extends CI_Controller {
 
 		// bit hacky, what if we add more rows? could do with being dynamic at some point
 		if($offset == 4) {
-			$this->update_top_positions();
+			$this->find_eligible_tweets();
 		}
 		
 		echo "all done!";
@@ -149,6 +149,8 @@ class Scraper extends CI_Controller {
 		return $stories;
 	}
 
+	/*
+
 	function update_top_positions() {
 		$this->db->group_by('source_id');
 		$this->db->order_by('created DESC');
@@ -162,50 +164,29 @@ class Scraper extends CI_Controller {
 		$this->find_eligible_tweets();
 
 	}
+	*/
 
 	function find_eligible_tweets() {
 		
-		// first get the top stories for past 24 hours
-		$this->db->order_by('source_id, date_created DESC');
-		$all_top_stories = $this->db->get('top_story_history')->result_array();
+		// first get the current top stories
+		$this->db->order_by('source_id, created DESC');
+		$this->db->group_by('source_id');
+		$current_top_stories = $this->db->get_where('news', array('rank' => 1))->result_array();
 
-		$story_counts = array();
-		$current_top_stories = array();
-		$last_top_story = NULL;
 		$stories_to_tweet = array();
 
 		// now pull out the newest top story and save the rest in an array
-		foreach($all_top_stories as $s) {
-			// bit ugly, removes the first row, which is the newest story (that we want to compare to this list)
-			if($last_top_story != $s['source_id']) {
-				$current_top_stories[] = $s;
-			} else {
-				$story_counts[$s['source_id']][] = $s['story_id'];
-			}
-			$last_top_story = $s['source_id'];
-		}
-
-		// find stories that haven't been #1 EVER
 		foreach($current_top_stories as $s) {
-			// if the story hasn't been in the top 5 for its source in the last day, then we tweet it
-			if(isset($story_counts[$s['source_id']])) {
-
-				if(!in_array($s['story_id'], $story_counts[$s['source_id']])) {
-					$stories_to_tweet[] = $s['story_id'];
-				}
-			} else { // there's nothing else in the table, reset?
-				$stories_to_tweet[] = $s['story_id'];
+			$num_times_top = $this->db->get_where('news_archive', array('url' => $s['url'], 'rank' => 1))->result_array();
+			if(count($num_times_top) === 1) {
+				$stories_to_tweet[] = $num_times_top[0];
 			}
 		}
 
 		if(!empty($stories_to_tweet)) {
-			// get the details of the stories to tweet
-			$this->db->order_by('created DESC');
-			$this->db->where_in('url', $stories_to_tweet);
-			$tweets = $this->db->get('news_archive')->result_array();
 
 			// now tweet them
-			foreach($tweets as $t) {
+			foreach($stories_to_tweet as $t) {
 				$link_length = 20; // default for t.co link and spaces etc
 				$headline = $t['headline'] . ': ';
 				$link = $t['url'];

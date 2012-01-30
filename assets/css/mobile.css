@@ -1,0 +1,31 @@
+/* iPhone [portrait + landscape] */
+
+@media only screen and (min-device-width : 320px) {
+
+    .newsbox ol {
+        height: auto;
+    }
+
+    .newsbox {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+}
+
+
+/* iPad [portrait + landscape] */
+/*
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+
+    .newsbox ol {
+        height: 390px;
+    }
+
+    .newsbox {
+        width: 245px !important;
+        margin: 0 40px 40px 0;
+    }
+
+}
+*/
