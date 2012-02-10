@@ -100,15 +100,17 @@ class Scraper extends CI_Controller {
 			}
 		} elseif($site === 'themirror') {
 			$div = $html->find('div.storylst-body div ul', 0);
-			$list = $div->find('li');
-			foreach($list as $item) {
-				$link = $item->find('h4 a', 0)->href;
-				$headline = $item->find('h4 a', 0)->innertext;
-				$image = $item->find('img', 0);
-				if($image) {
-					$image = $image->src;
+			if($div) {
+				$list = $div->find('li', 0);
+				foreach($list as $item) {
+					$link = $item->find('h4 a', 0)->href;
+					$headline = $item->find('h4 a', 0)->innertext;
+					$image = $item->find('img', 0);
+					if($image) {
+						$image = $image->src;
+					}
+					$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 				}
-				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'independent') {
 			$list = $html->find('div.mostViewed ul li');
