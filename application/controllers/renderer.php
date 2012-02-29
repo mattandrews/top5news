@@ -62,4 +62,24 @@ class Renderer extends CI_Controller {
         $top_5_top_5 = $this->db->query($sql)->result_array();
         return $top_5_top_5;
     }
+
+    function rankchanges() {
+        $links = $this->input->post('links');
+        $links = explode(',', $links);
+        $date = $this->input->post('date');
+        $date_unix = strtotime($date);
+        $date_past = date('Y-m-d G:i:s', $date_unix - (900)); // 15 mins in seconds
+        $date_future = date('Y-m-d G:i:s', $date_unix + (900)); // 15 mins in seconds
+        
+        //$this->db->limit(1);
+        $this->db->order_by('created DESC');
+        $this->db->where_in('url', $links);
+        //$this->db->where('created <', $date_past);
+        //$this->db->where('DATE( created ) > SUBDATE( NOW() , INTERVAL 15 MINUTE ) AND DATE( created ) <= NOW()');
+        $this->db->where('created > "'.$date_past.'" AND created < "'.$date.'"');
+        $news = $this->db->get('news')->result_array();
+        
+        echo json_encode($news);
+        //echo $this->db->last_query();
+    }
 }

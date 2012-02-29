@@ -3,13 +3,13 @@
 <head>
     <title>Top 5 News | beta v1.0</title>
     
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta charset="utf-8" />
-    <link href="<?php echo base_url(); ?>assets/css/top5news.css?v=1" rel="stylesheet" type="text/css" />
-    <?php if($is_mobile) { ?>
-      <link href="<?php echo base_url(); ?>assets/css/mobile.css" rel="stylesheet" type="text/css" />
-    <?php } ?>
+
+    <link href="<?php echo base_url(); ?>assets/css/top5news.css?v=2" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/mobile.css?v=2" />
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-27742277-1']);
@@ -22,6 +22,41 @@
       })();
     </script>
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.7.1.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        var links = [];
+        var last_datestamp = "<?php echo $news['The Guardian'][0]['created']; ?>";
+
+        $('div.newsbox a').each(function(i){
+          links[i] = $(this).attr('href');
+        });
+
+        $.ajax({
+          url: '<?php echo site_url("renderer/rankchanges"); ?>', 
+          dataType: 'json',
+          type: 'post',
+          data: 'date=' + last_datestamp + '&links=' + links,
+          success: function(json){
+            for (var i in json) {
+              var result = json[i];
+
+              var item = $('div.newsbox a[href="'+result.url+'"]');
+              
+              if(item.length) {
+                var current_rank = item.data('rank');
+                var old_rank = result.rank;
+                if (current_rank > old_rank) {
+                  $('<span class="up"></span>').appendTo(item);
+                } else if (current_rank < old_rank) {
+                  $('<span class="down"></span>').appendTo(item);
+                }
+              }
+            }
+          }
+        });
+
+      });
+    </script>
 </head>
 
 <body>
@@ -51,17 +86,16 @@
                   $headline = ' <strong>' . $s['full_name'] . '</strong>: ' . $headline;
                 }
                 if(!$is_mobile) {
-                    $headline = character_limiter($headline, 80);
+                    $headline = character_limiter($headline, 75);
                 }
 
-
-                echo '<li><a data-id="'.$s['id'].'" target="_new" href="' . $s['url'] . '" title="'.$s['headline'].'">' . $headline . '</a></li>';
+                echo '<li id="link-id-'.$s['id'].'"><a data-id="'.$s['id'].'" data-rank="'.$s['rank'].'" target="_blank" href="' . $s['url'] . '" title="'.$s['headline'].'">' . $headline . '</a></li>';
             }
             echo "</ol>";
             echo "</div>";
         } ?>
 
-        <p>Additional design by <a href="http://www.twitter.com/lawrencebrown">Lawrence Brown</a>. Want to <a href="mailto:top5newsuk@gmail.com" id="contact-us">contact us?</a><br /> Or why not read the <a id="go-meta" href="javascript://">Top 5 Top 5</a>. Follow us at <a href="https://twitter.com/Top5NewsUK">@Top5NewsUK</a>.</p>
+        <p>Additional design by <a href="http://www.twitter.com/lawrencebrown">Lawrence Brown</a>. Want to <a href="mailto:top5newsuk@gmail.com" id="contact-us">contact us?</a><br /> Follow us at <a href="https://twitter.com/Top5NewsUK">@Top5NewsUK</a>.</p>
 
         <form action="<?php echo site_url('renderer/email'); ?>" id="email-form" method="post">
             <label>Your name</label>
@@ -78,10 +112,6 @@
     <script>
         $(document).ready(function(){
            $('#email-form').hide();
-
-           $('#go-meta').click(function(){
-              $('.metabox').toggle().css('display', 'inline-block'); 
-           });
 
            $('#contact-us').click(function(){
               $('#email-form').slideToggle(); 

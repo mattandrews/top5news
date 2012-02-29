@@ -99,15 +99,12 @@ class Scraper extends CI_Controller {
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'themirror') {
-			$div = $html->find('div.storylst-body div ul', 0);
+			$div = $html->find('div.mostRead div ol', 0);
 			$list = $div->find('li');
 			foreach($list as $item) {
-				$link = $item->find('h4 a', 0)->href;
-				$headline = $item->find('h4 a', 0)->innertext;
-				$image = $item->find('img', 0);
-				if($image) {
-					$image = $image->src;
-				}
+				$link = $item->find('a', 0)->href;
+				$headline = $item->find('a', 0)->innertext;
+				$image = NULL;
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'independent') {
@@ -142,6 +139,16 @@ class Scraper extends CI_Controller {
 						$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 					}
 				}
+			}
+		} elseif($site === 'yahoo-news') {
+			$div = $html->find('ul.most-popular-ul', 0);
+			$list = $div->find('li');
+			$prefix = 'http://uk.news.yahoo.com';
+			foreach($list as $item) {
+				$link = $prefix . $item->find('h4 a', 0)->href;
+				$headline = $item->find('h4 a', 0)->innertext;
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		}
 		
@@ -188,7 +195,7 @@ class Scraper extends CI_Controller {
 			// now tweet them
 			foreach($stories_to_tweet as $t) {
 				$link_length = 20; // default for t.co link and spaces etc
-				$headline = $t['headline'] . ': ';
+				$headline = strip_tags($t['headline']) . ': ';
 				$link = $t['url'];
 				$hashtag = ' #top5news';
 				$limit = 140;
