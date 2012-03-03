@@ -21,11 +21,15 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
+
     <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery.cookie.js"></script>
+
     <script>
       $(document).ready(function(){
         var links = [];
-        var last_datestamp = "<?php echo $news['The Guardian'][0]['created']; ?>";
+        var last_datestamp = "<?php echo $news['guardian'][0]['created']; ?>";
 
         $('div.newsbox a').each(function(i){
           links[i] = $(this).attr('href');
@@ -55,6 +59,18 @@
           }
         });
 
+        $('#container').sortable({
+          items: 'div.newsbox',
+          start: function(event, ui) {
+            $('ul.sortable li').css('float', 'left');
+          },
+          stop: function(event, ui) {
+            $('ul.sortable li').css('float', 'none');
+            var serialize = $('#container').sortable('toArray');
+            $.cookie('top5news_custom_order', serialize, { expires: 365 });
+          }
+        }).disableSelection();
+
       });
     </script>
 </head>
@@ -64,9 +80,12 @@
         <h1>Top 5 News</h1>
         <p>The five most popular stories on the UK's most popular news websites. Feeds are refreshed every 15 minutes.<br />
         An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>. Why not <a href="https://twitter.com/Top5NewsUK">follow Top5News on Twitter</a>?</p>
+
+        <p>Want custom ordering? Drag and drop a box to save your custom preference and we'll show it to you like that from now on.</p>
         <?php foreach($news as $source=>$stories) {
             $source_name = $stories[0]['source_name'];
-            echo '<div class="newsbox';
+            $source_title = $stories[0]['full_name'];
+            echo '<div id="item-'.$source_name.'" class="newsbox';
             if($source_name == 'meta') {
                 echo ' metabox';
             }
@@ -75,18 +94,18 @@
             if($source == 'meta') {
               echo "Top 5 Top 5";
             } else {
-              echo $source;
+              echo $source_title;
             }
             echo '<span title="' . date('l jS F Y (g:ia)', strtotime($stories[0]['created'])) . '">~' . $this->prettydate->getStringResolved($stories[0]['created']) . '</span>';
             echo '</h2>';
             echo "<ol>";
             foreach($stories as $s) {
-                $headline = $s['headline'];
+                $headline = strip_tags($s['headline']);
                 if($source_name == 'meta') {
                   $headline = ' <strong>' . $s['full_name'] . '</strong>: ' . $headline;
                 }
                 if(!$is_mobile) {
-                    $headline = character_limiter($headline, 75);
+                    $headline = character_limiter($headline, 65);
                 }
 
                 echo '<li id="link-id-'.$s['id'].'"><a data-id="'.$s['id'].'" data-rank="'.$s['rank'].'" target="_blank" href="' . $s['url'] . '" title="'.$s['headline'].'">' . $headline . '</a></li>';

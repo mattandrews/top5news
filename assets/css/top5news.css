@@ -9,7 +9,7 @@ body {
 
 #container {
     height: 80%;
-    margin: 20px auto 80px;
+    margin: 20px auto;
     width: 90%;
 }
 
@@ -23,7 +23,19 @@ h1 {
 }
 
 p {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
+}
+
+ul.sortable {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display:block;
+    overflow:hidden
+}
+
+ul.sortable li {
+    display: inline-block;
 }
 
 .newsbox {
@@ -46,6 +58,7 @@ p {
     padding: 0px 10px 0 30px;
     margin: 10px;
     overflow: auto;
+    list-style-type: decimal;
 }
 
 .newsbox ol li {
@@ -55,6 +68,7 @@ p {
     color: #489cde;
     padding-bottom: 10px;
     border-bottom: 1px solid #cbcbc5;
+    list-style-type: decimal;
 }
 
 a {
@@ -127,7 +141,7 @@ h2.telegraph {
     background: #e6e6e6 url(../img/icons/telegraph.png) no-repeat 8px 8px;
 }
 
-h2.yahoo-news {
+h2.yahoonews {
     background: #e6e6e6 url(../img/icons/yahoo.png) no-repeat 8px 8px;
 }
 

@@ -23,13 +23,27 @@ class Renderer extends CI_Controller {
         
         $data['news'] = array();
         foreach($news as $n) {
-            $data['news'][$n['full_name']][] = $n;
+            $data['news'][$n['source_name']][] = $n;
         }
 
         $meta = $this->meta();
         foreach($meta as $m) {
             $m['source_name'] = 'meta';
             $data['news']['meta'][] = $m;
+        }
+
+        if(isset($_COOKIE['top5news_custom_order'])) {
+            $custom_order = $_COOKIE['top5news_custom_order'];
+            $data_temp = $data['news'];
+            unset($data['news']);
+
+            $custom_order = str_replace('item-', '', $custom_order);
+            $custom_order = explode(',', $custom_order);
+
+            foreach($custom_order as $c) {
+                $data['news'][$c] = $data_temp[$c];
+            }
+
         }
 
         $this->load->view('index', $data);
@@ -68,14 +82,10 @@ class Renderer extends CI_Controller {
         $links = explode(',', $links);
         $date = $this->input->post('date');
         $date_unix = strtotime($date);
-        $date_past = date('Y-m-d G:i:s', $date_unix - (900)); // 15 mins in seconds
-        $date_future = date('Y-m-d G:i:s', $date_unix + (900)); // 15 mins in seconds
+        $date_past = date('Y-m-d G:i:s', $date_unix - (3600)); // 1 hour
         
-        //$this->db->limit(1);
         $this->db->order_by('created DESC');
         $this->db->where_in('url', $links);
-        //$this->db->where('created <', $date_past);
-        //$this->db->where('DATE( created ) > SUBDATE( NOW() , INTERVAL 15 MINUTE ) AND DATE( created ) <= NOW()');
         $this->db->where('created > "'.$date_past.'" AND created < "'.$date.'"');
         $news = $this->db->get('news')->result_array();
         

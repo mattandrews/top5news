@@ -1,0 +1,148 @@
+1330807204TS---><!doctype html>
+<html >
+<head>
+    <title>Top 5 News | beta v1.0</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta charset="utf-8" />
+
+    <link href="http://localhost/top5news/assets/css/top5news.css?v=2" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/top5news/assets/css/mobile.css?v=2" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/top5news/assets/css/jqueryuxi.css?v=2" />
+
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-27742277-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+    <script type="text/javascript" src="http://localhost/top5news/assets/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="http://localhost/top5news/assets/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://localhost/top5news/assets/js/jquery.cookie.js"></script>
+
+    <script>
+      $(document).ready(function(){
+        var links = [];
+        var last_datestamp = "2012-02-29 23:07:10";
+
+        $('div.newsbox a').each(function(i){
+          links[i] = $(this).attr('href');
+        });
+
+        $.ajax({
+          url: 'http://localhost/top5news/index.php/renderer/rankchanges', 
+          dataType: 'json',
+          type: 'post',
+          data: 'date=' + last_datestamp + '&links=' + links,
+          success: function(json){
+            for (var i in json) {
+              var result = json[i];
+
+              var item = $('div.newsbox a[href="'+result.url+'"]');
+              
+              if(item.length) {
+                var current_rank = item.data('rank');
+                var old_rank = result.rank;
+                if (current_rank > old_rank) {
+                  $('<span class="up"></span>').appendTo(item);
+                } else if (current_rank < old_rank) {
+                  $('<span class="down"></span>').appendTo(item);
+                }
+              }
+            }
+          }
+        });
+
+        $('#container').sortable({
+          items: 'div.newsbox',
+          start: function(event, ui) {
+            $('ul.sortable li').css('float', 'left');
+          },
+          stop: function(event, ui) {
+            $('ul.sortable li').css('float', 'none');
+            var serialize = $('#container').sortable('toArray');
+            $.cookie('top5news_custom_order', serialize, { expires: 365 });
+          }
+        }).disableSelection();
+
+      });
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <h1>Top 5 News</h1>
+        <p>The five most popular stories on the UK's most popular news websites. Feeds are refreshed every 15 minutes.<br />
+        An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>. Why not <a href="https://twitter.com/Top5NewsUK">follow Top5News on Twitter</a>?</p>
+
+        <p>Want custom ordering? Drag and drop a box to save your custom preference and we'll show it to you like that from now on.</p>
+        <div id="item-guardian" class="newsbox"><h2 class="guardian">The Guardian<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-336"><a data-id="336" data-rank="1" target="_blank" href="http://www.guardian.co.uk/world/2012/feb/28/arab-first-ladies-of-oppression" title="The Arab world's first ladies of oppression">The Arab world's first ladies of oppression</a></li><li id="link-id-337"><a data-id="337" data-rank="2" target="_blank" href="http://www.guardian.co.uk/music/musicblog/2012/feb/29/gioachino-rossini-google-doodle" title="Gioachino Rossini: let's join Google in raising a toast">Gioachino Rossini: let's join Google in raising a toast</a></li><li id="link-id-338"><a data-id="338" data-rank="3" target="_blank" href="http://www.guardian.co.uk/football/video/2012/feb/29/goalkeeper-scores-wind-assisted-own-goal-video" title="Goalkeeper scores unbelievable own goal - video">Goalkeeper scores unbelievable own goal - video</a></li><li id="link-id-339"><a data-id="339" data-rank="4" target="_blank" href="http://www.guardian.co.uk/technology/2012/feb/29/raspberry-pi-computer-sale-british" title="Demand for Raspberry Pi, the British £22 computer, crashes website">Demand for Raspberry Pi, the British £22 computer, crashes website</a></li><li id="link-id-340"><a data-id="340" data-rank="5" target="_blank" href="http://www.guardian.co.uk/football/2012/feb/29/england-holland-international-friendly-mbm" title="England v Holland – as it happened | Rob Smyth">England v Holland – as it happened | Rob Smyth</a></li></ol></div><div id="item-thesun" class="newsbox"><h2 class="thesun">The Sun<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-351"><a data-id="351" data-rank="1" target="_blank" href="http://www.thesun.co.uk/sol/homepage/news/4161108/Girl-eats-4000-brwashing-up-sponges.html" title="Girl eats 4,000 <br/>washing-up sponges">Girl eats 4,000 washing-up sponges</a></li><li id="link-id-352"><a data-id="352" data-rank="2" target="_blank" href="http://www.thesun.co.uk/sol/homepage/showbiz/bizarre/4161892/Lindsay-Lohan-looks-a-big-star-in-New-York-and-sultry-in-jeans-ad.html" title="Lindsay Lohan goes from puff to hot stuff">Lindsay Lohan goes from puff to hot stuff</a></li><li id="link-id-353"><a data-id="353" data-rank="3" target="_blank" href="http://www.thesun.co.uk/sol/homepage/sport/football/4161142/Jose-Mourinho-news-London-house-hunt-for-Real-Madrid-boss.html" title="Back for Mour? Jose in London house hunt ">Back for Mour? Jose in London house hunt </a></li><li id="link-id-354"><a data-id="354" data-rank="4" target="_blank" href="http://www.thesun.co.uk/sol/homepage/news/4161080/Mum-of-ten-demands-bigger-home-despite-30k-a-year-benefits.html" title="Mum of ten demands bigger home despite ...">Mum of ten demands bigger home despite ...</a></li><li id="link-id-355"><a data-id="355" data-rank="5" target="_blank" href="http://www.thesun.co.uk/sol/homepage/news/4161089/Students-exam-bloopers-are-a-web-hit.html" title="Students&rsquo; exam bloopers become an ...">Students&rsquo; exam bloopers become an ...</a></li></ol></div><div id="item-independent" class="newsbox"><h2 class="independent">The Independent<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-361"><a data-id="361" data-rank="1" target="_blank" href="http://www.independent.co.uk/news/world/europe/krokodil-the-drug-that-eats-junkies-2300787.html" title="Krokodil: The drug that eats junkies">Krokodil: The drug that eats junkies</a></li><li id="link-id-362"><a data-id="362" data-rank="2" target="_blank" href="http://www.independent.co.uk/news/world/americas/new-evidence-suggests-stone-age-hunters-from-europe-discovered-america-7447152.html" title="New evidence suggests Stone Age hunters from Europe discovered America">New evidence suggests Stone Age hunters from Europe discovered America</a></li><li id="link-id-363"><a data-id="363" data-rank="3" target="_blank" href="http://www.independent.co.uk/news/media/press/can-leveson-inquiry-get-any-worse-for-key-players-7462649.html" title="Can Leveson Inquiry get any worse for key players?">Can Leveson Inquiry get any worse for key players?</a></li><li id="link-id-364"><a data-id="364" data-rank="4" target="_blank" href="http://www.independent.co.uk/news/uk/this-britain/29-february-would-you-take-the-leap-women-who-proposed-to-men-7454291.html" title="29 February: Would you take the leap? Women who proposed to men">29 February: Would you take the leap? Women who proposed to men</a></li><li id="link-id-365"><a data-id="365" data-rank="5" target="_blank" href="http://www.independent.co.uk/news/world/europe/ireland-to-hold-referendum-on-euro-pact-7462641.html" title="Ireland to hold referendum on euro pact">Ireland to hold referendum on euro pact</a></li></ol></div><div id="item-telegraph" class="newsbox"><h2 class="telegraph">The Telegraph<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-346"><a data-id="346" data-rank="1" target="_blank" href="http://www.telegraph.co.uk/news/worldnews/southamerica/argentina/9111201/Hit-Argentina-where-it-hurts-in-the-wallet.html" title="Hit Argentina where it hurts – in the wallet">Hit Argentina where it hurts – in the wallet</a></li><li id="link-id-347"><a data-id="347" data-rank="2" target="_blank" href="http://www.telegraph.co.uk/technology/google/google-doodle/9112593/Gioachino-Rossinis-220th-birthday-marked-with-Google-doodle.html" title="Gioachino Rossini&#039;s 220th birthday marked with Google doodle">Gioachino Rossini&#039;s 220th birthday marked with Google doodle</a></li><li id="link-id-348"><a data-id="348" data-rank="3" target="_blank" href="http://www.telegraph.co.uk/culture/music/opera/9111807/Royal-Operas-Rusalka-greeted-with-chorus-of-boos.html" title="Royal Opera&#039;s Rusalka greeted with chorus of boos">Royal Opera&#039;s Rusalka greeted with chorus of boos</a></li><li id="link-id-349"><a data-id="349" data-rank="4" target="_blank" href="http://www.telegraph.co.uk/finance/financialcrisis/9112155/Irish-EU-treaty-vote-threatens-chaos.html" title="Irish EU treaty vote threatens chaos">Irish EU treaty vote threatens chaos</a></li><li id="link-id-350"><a data-id="350" data-rank="5" target="_blank" href="http://www.telegraph.co.uk/news/uknews/terrorism-in-the-uk/9112389/July-7-bombers-widow-on-the-run-over-links-with-terrorist-cell.html" title="July 7 bomber&#039;s widow &#039;on the run&#039; over links with terrorist cell">July 7 bomber&#039;s widow &#039;on the run&#039; over links with terrorist&#8230;</a></li></ol></div><div id="item-themirror" class="newsbox"><h2 class="themirror">The Daily Mirror<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-356"><a data-id="356" data-rank="1" target="_blank" href="http://www.mirror.co.uk/news/world-news/new-dna-profile-reveals-clues-746637" title=" The Iceman cometh... from Corsica? New DNA profile reveals clues about frozen corpse Ötzi ">The Iceman cometh... from Corsica? New DNA profile reveals clues about frozen&#8230;</a></li><li id="link-id-357"><a data-id="357" data-rank="2" target="_blank" href="http://www.mirror.co.uk/news/uk-news/jose-mourinho-on-london-househunting-mission-746902" title=" Return of the Special One? Jose&#039;s secret London househunting mission "> Return of the Special One? Jose&#039;s secret London househunting mission </a></li><li id="link-id-358"><a data-id="358" data-rank="3" target="_blank" href="http://www.mirror.co.uk/news/weird-news/zombie-gran-95-year-old-chinese-woman-746295" title=" Zombie gran: 95-year-old Chinese woman terrifies neighbours by climbing out of her coffin six days after she &#039;died&#039; ">Zombie gran: 95-year-old Chinese woman terrifies neighbours by climbing out&#8230;</a></li><li id="link-id-359"><a data-id="359" data-rank="4" target="_blank" href="http://www.mirror.co.uk/news/uk-news/police-probe-mass-brawl-claims-747355" title=" Police probe &#039;mass brawl&#039; claims as schoolboy dies after being hit in head by cricket ball ">Police probe &#039;mass brawl&#039; claims as schoolboy dies after being hit&#8230;</a></li><li id="link-id-360"><a data-id="360" data-rank="5" target="_blank" href="http://www.mirror.co.uk/news/world-news/davy-jones-dead-monkees-lead-747781" title=" Davy Jones of The Monkees dies aged 66: Tributes pour in for singer "> Davy Jones of The Monkees dies aged 66: Tributes pour in for singer </a></li></ol></div><div id="item-bbc" class="newsbox"><h2 class="bbc">BBC<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-366"><a data-id="366" data-rank="1" target="_blank" href="http://www.bbc.co.uk/news/uk-17214430" title="Monkees' Davy Jones dies aged 66">Monkees' Davy Jones dies aged 66</a></li><li id="link-id-367"><a data-id="367" data-rank="2" target="_blank" href="http://www.bbc.co.uk/newsbeat/17191842" title="Angelina leg sparks online craze">Angelina leg sparks online craze</a></li><li id="link-id-368"><a data-id="368" data-rank="3" target="_blank" href="http://www.bbc.co.uk/newsbeat/17210489" title="Game will not stock Mass Effect 3">Game will not stock Mass Effect 3</a></li><li id="link-id-369"><a data-id="369" data-rank="4" target="_blank" href="http://www.bbc.co.uk/news/magazine-17202274" title="If Britain were Greece...">If Britain were Greece...</a></li><li id="link-id-370"><a data-id="370" data-rank="5" target="_blank" href="http://www.bbc.co.uk/news/magazine-17203353" title="Leap year: 10 things about 29 February">Leap year: 10 things about 29 February</a></li></ol></div><div id="item-yahoonews" class="newsbox"><h2 class="yahoonews">Yahoo! News<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-376"><a data-id="376" data-rank="1" target="_blank" href="http://uk.news.yahoo.com/why-flatworms-may-hold-the-secret-to-immortality.html" title="Why flatworms may hold the secret to immortality">Why flatworms may hold the secret to immortality</a></li><li id="link-id-377"><a data-id="377" data-rank="2" target="_blank" href="http://uk.news.yahoo.com/raspberry-pi-too-tasty-as-huge-demand-crashes-sites.html" title="Raspberry Pi too tasty as huge demand crashes sites">Raspberry Pi too tasty as huge demand crashes sites</a></li><li id="link-id-378"><a data-id="378" data-rank="3" target="_blank" href="http://uk.news.yahoo.com/english-cities-hit-back-at--ridiculous--un-claims-over--no-go-areas-controlled-by-drug-gangs-.html" title="English cities hit back at UN claims over 'no-go areas controlled by drug gangs'">English cities hit back at UN claims over 'no-go areas controlled by drug gangs'</a></li><li id="link-id-379"><a data-id="379" data-rank="4" target="_blank" href="http://uk.news.yahoo.com/who’s-been-looking-at-your-facebook-page--can-you-find-out-.html" title="Who’s been looking at your Facebook page? Can you find out?">Who’s been looking at your Facebook page? Can you find out?</a></li><li id="link-id-380"><a data-id="380" data-rank="5" target="_blank" href="http://uk.news.yahoo.com/horse-rescued-three-hours-stuck-mud-080528609.html" title="Horse Rescued After Three Hours Stuck In Mud">Horse Rescued After Three Hours Stuck In Mud</a></li></ol></div><div id="item-ft" class="newsbox"><h2 class="ft">Financial Times<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-371"><a data-id="371" data-rank="1" target="_blank" href="http://www.ft.com/cms/s/8491b776-6235-11e1-872e-00144feabdc0.html" title="Democrats grow confident of House win">Democrats grow confident of House win</a></li><li id="link-id-372"><a data-id="372" data-rank="2" target="_blank" href="http://www.ft.com/intl/cms/s/a49cb190-6228-11e1-872e-00144feabdc0.html" title="Apple joins exclusive $500bn club">Apple joins exclusive $500bn club</a></li><li id="link-id-373"><a data-id="373" data-rank="3" target="_blank" href="http://www.ft.com/cms/s/0/99cac558-6238-11e1-872e-00144feabdc0.html" title="Dalio takes hedge crown from Soros">Dalio takes hedge crown from Soros</a></li><li id="link-id-374"><a data-id="374" data-rank="4" target="_blank" href="http://www.ft.com/cms/s/0/fd386d8e-6161-11e1-8a8e-00144feabdc0.html" title="Israel faces resistance over Iran strike">Israel faces resistance over Iran strike</a></li><li id="link-id-375"><a data-id="375" data-rank="5" target="_blank" href="http://www.ft.com/cms/s/80dc4c64-6220-11e1-807f-00144feabdc0.html" title="Ireland calls vote on European fiscal pact">Ireland calls vote on European fiscal pact</a></li></ol></div><div id="item-dailymail" class="newsbox"><h2 class="dailymail">The Daily Mail<span title="Wednesday 29th February 2012 (11:07pm)">~2 days ago</span></h2><ol><li id="link-id-341"><a data-id="341" data-rank="1" target="_blank" href="http://www.dailymail.co.uk/news/article-2108063/Funnyexam-com-Hilarious-exam-answers-given-students.html" title="What's hard water? It's ice... Convert centimetre to metre? Take out centi... Teachers spill the beans on funniest exam answers EVER">What's hard water? It's ice... Convert centimetre to metre? Take out centi...&#8230;</a></li><li id="link-id-342"><a data-id="342" data-rank="2" target="_blank" href="http://www.dailymail.co.uk/tvshowbiz/article-2107836/Angelina-Jolie-right-leg-pose-Copy-Jennifer-Anistons-red-carpet-display.html" title="Anything Jen can do: How Angelina Jolie (and her unruly right leg) copied love rival Jennifer Aniston's red carpet display">Anything Jen can do: How Angelina Jolie (and her unruly right leg) copied love&#8230;</a></li><li id="link-id-343"><a data-id="343" data-rank="3" target="_blank" href="http://www.dailymail.co.uk/news/article-2107751/Kyle-Rees-16-dies-struck-cricket-ball-playground-lunch-hour.html" title="Schoolboy, 16, killed by cricket ball 'during mass brawl involving 40 pupils hurling chairs'">Schoolboy, 16, killed by cricket ball 'during mass brawl involving 40 pupils&#8230;</a></li><li id="link-id-344"><a data-id="344" data-rank="4" target="_blank" href="http://www.dailymail.co.uk/tvshowbiz/article-2107970/Jennifer-Garner-Ben-Afflecks-daughters-baby-brother-called-Samuel.html" title="Finally... it's a boy! Jennifer Garner and Ben Affleck's daughters get a baby brother called Samuel">Finally... it's a boy! Jennifer Garner and Ben Affleck's daughters get a baby&#8230;</a></li><li id="link-id-345"><a data-id="345" data-rank="5" target="_blank" href="http://www.dailymail.co.uk/tvshowbiz/article-2108133/From-Brad-Doug-Pitt-Julia-Lisa-Roberts--Meet-Hollywoods-famous-stars-little-known-siblings.html" title="From Brad and Doug Pitt to Sharon and Kelly Stone... Meet Hollywood's most famous stars' lesser known siblings">From Brad and Doug Pitt to Sharon and Kelly Stone... Meet Hollywood's most&#8230;</a></li></ol></div><div id="item-meta" class="newsbox metabox"><h2 class="meta">Top 5 Top 5<span title="Wednesday 29th February 2012 (9:11pm)">~3 days ago</span></h2><ol><li id="link-id-135"><a data-id="135" data-rank="5" target="_blank" href="http://www.bbc.co.uk/newsbeat/17210489" title="Game will not stock Mass Effect 3"> <strong>BBC</strong>: Game will not stock Mass Effect 3</a></li><li id="link-id-197"><a data-id="197" data-rank="2" target="_blank" href="http://uk.news.yahoo.com/raspberry-pi-too-tasty-as-huge-demand-crashes-sites.html" title="Raspberry Pi too tasty as huge demand crashes sites"><strong>Yahoo! News</strong>: Raspberry Pi too tasty as huge demand crashes&#8230;</a></li><li id="link-id-340"><a data-id="340" data-rank="5" target="_blank" href="http://www.guardian.co.uk/football/2012/feb/29/england-holland-international-friendly-mbm" title="England v Holland – as it happened | Rob Smyth"><strong>The Guardian</strong>: England v Holland – as it happened | Rob Smyth&#8230;</a></li><li id="link-id-196"><a data-id="196" data-rank="1" target="_blank" href="http://uk.news.yahoo.com/why-flatworms-may-hold-the-secret-to-immortality.html" title="Why flatworms may hold the secret to immortality"><strong>Yahoo! News</strong>: Why flatworms may hold the secret to immortality&#8230;</a></li><li id="link-id-84"><a data-id="84" data-rank="4" target="_blank" href="http://www.guardian.co.uk/technology/2012/feb/29/raspberry-pi-computer-sale-british" title="Demand for Raspberry Pi, the British £22 computer, crashes website"><strong>The Guardian</strong>: Demand for Raspberry Pi, the British £22 computer,&#8230;</a></li></ol></div>
+        <p>Additional design by <a href="http://www.twitter.com/lawrencebrown">Lawrence Brown</a>. Want to <a href="mailto:top5newsuk@gmail.com" id="contact-us">contact us?</a><br /> Follow us at <a href="https://twitter.com/Top5NewsUK">@Top5NewsUK</a>.</p>
+
+        <form action="http://localhost/top5news/index.php/renderer/email" id="email-form" method="post">
+            <label>Your name</label>
+            <input size="40" type="text" name="name" />
+            <label>Your email</label>
+            <input size="40" type="text" name="email" />
+            <label>Your comments</label>
+            <textarea name="comments" rows="6" cols="60"></textarea>
+            <input type="submit" id="send-email" value="Send message" />
+        </form>
+
+    </div>
+
+    <script>
+        $(document).ready(function(){
+           $('#email-form').hide();
+
+           $('#contact-us').click(function(){
+              $('#email-form').slideToggle(); 
+           });
+
+           $('#email-form').submit(function(){
+              $('.form-feedback').remove();
+              var form = $(this);
+              var name = form.children('input[name=name]');
+              var email = form.children('input[name=email]');
+              var comments = form.children('textarea[name=comments]');
+              if (name.val() == '' || email.val() == '' || comments.val() == '') {
+                  update_form_feedback('Please fill out all of the fields!');
+              } else {
+                  $.ajax({
+                     type: 'post',
+                     url: form.attr('action'),
+                     data: form.serialize(),
+                     success: function() {
+                         update_form_feedback('Your message was sent -- thanks!');
+                     },
+                     error: function() {
+                         update_form_feedback('There was a problem sending your message, sorry :(');
+                     }
+                  });
+                  return false;
+              }
+              return false;
+           });
+
+           $('.newsbox a').click(function(){
+               var link = $(this);
+               var id = link.data('id');
+               $.post('http://localhost/top5news/index.php/renderer/track', 'id=' + id);
+           })
+
+        });
+
+        function update_form_feedback(msg) {
+            $('<p class="form-feedback">' + msg + '</p>').insertAfter('#send-email');
+        }
+    </script>
+</body>
+</html>

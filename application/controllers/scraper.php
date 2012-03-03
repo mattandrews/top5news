@@ -140,7 +140,7 @@ class Scraper extends CI_Controller {
 					}
 				}
 			}
-		} elseif($site === 'yahoo-news') {
+		} elseif($site === 'yahoonews') {
 			$div = $html->find('ul.most-popular-ul', 0);
 			$list = $div->find('li');
 			$prefix = 'http://uk.news.yahoo.com';
