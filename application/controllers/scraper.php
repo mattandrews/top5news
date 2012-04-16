@@ -7,7 +7,7 @@ class Scraper extends CI_Controller {
 	}
 
 	// we can now call it in stages
-	function scrape($limit, $offset) {
+	function scrape($locale, $limit, $offset) {
 		set_time_limit(15 * 60);
 
 		// delete yesterday's news
@@ -17,7 +17,11 @@ class Scraper extends CI_Controller {
 		
 		$this->db->offset($offset);
 		$this->db->limit($limit);
+		$this->db->where(array('locale_id' => $locale, 'is_active' => 1));
 		$sites = $this->db->get('sources')->result_array();
+
+		// for debug
+		//echo '<pre>'; print_r($sites);
 
 		foreach($sites as $site) {
 			$html = file_get_html($site['source_url']);
@@ -50,9 +54,11 @@ class Scraper extends CI_Controller {
 	}
 	
 	function _filter_out_headlines($site, $html) {
+
+
 		$stories = array();
 		
-		if($site === 'guardian') {
+		if($site === 'guardian') { // duped at end for US edition
 			$list = $html->find('div.most-viewed-section ol li');
 			foreach($list as $item) {
 				$link = $item->find('a', 0)->href;
@@ -151,9 +157,155 @@ class Scraper extends CI_Controller {
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		}
+
+
+		// BEGIN USA CHECKS
+
+		elseif($site === 'yahoonewsusa') {
+			$div = $html->find('ul.most-popular-ul', 0);
+			$list = $div->find('li');
+			$prefix = 'http://news.yahoo.com';
+			foreach($list as $item) {
+				$link = $prefix . $item->find('h4 a', 0)->href;
+				$headline = $item->find('h4 a', 0)->innertext;
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'cnn') {
+			$prefix = "http://edition.cnn.com";
+			$list = $html->find('div#cnnMostPopularItem');
+			foreach($list as $item) {
+				$link = $item->find('div.cnnMPContentHeadline a', 0)->href;
+				if (strpos($link, $prefix) === FALSE) {
+					$link = $prefix . $link;
+				}
+				$headline = $item->find('div.cnnMPContentHeadline a', 0)->innertext;
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'msnbc') {
+			$div = $html->find('div#grid_21604548 div#cell2', 0);
+			$list = $div->find('div.story');
+			foreach($list as $item) {
+				$link = $item->find('h6 a', 0)->href;
+				$headline = $item->find('h6 a', 0)->innertext;
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'nyt') {
+			$div = $html->find('ol.mostPopularList', 1);
+			$list = $div->find('li');
+			foreach($list as $item) {
+				$link = $item->find('a', 0)->href;
+				$headline = trim($item->find('a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'huffpo') {
+			$div = $html->find('div.snp_most_popular', 0); // only returns 4, bah
+			$list = $div->find('div.snp_most_popular_entry');
+			foreach($list as $item) {
+				// offset for img
+				$link = $item->find('a.track_page_article', 1)->href;
+				$headline = trim($item->find('a.track_page_article', 1)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'fox') {
+			$div = $html->find('div.listings', 1); // only returns 3, bah
+			$list = $div->find('ul.list li');
+			foreach($list as $item) {
+				$link = $item->find('a', 0)->href;
+				$headline = trim($item->find('a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'washpo') {
+			$div = $html->find('div.most-post ul li ol', 0);
+			$list = $div->find('li');
+			foreach($list as $item) {
+				$link = $item->find('a', 0)->href;
+				$headline = trim($item->find('a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'latimes') {
+			$div = $html->find('ul.feedMasherList', 1);
+			$list = $div->find('li');
+			foreach($list as $item) {
+				$link = $item->find('a', 0)->href;
+				$headline = trim($item->find('a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'abc') {
+			$div = $html->find('div#listpack', 0);
+			$list = $div->find('div.pane ul li');
+			foreach($list as $item) {
+				$class = $item->class;
+				$offset = 1;
+				if($class == 'leaditem') { $offset = 0; }
+				$link = $item->find('a', $offset)->href;
+				$headline = trim($item->find('a', $offset)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'usatoday') {
+			$div = $html->find('div.ranked-list ol', 0);
+			$list = $div->find('li');
+			foreach($list as $item) {
+				$link = $item->find('a', 0)->href;
+				$headline = trim($item->find('a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'wsj') {
+			$prefix = "http://online.wsj.com";
+			$div = $html->find('div#mvtab0 table', 0);
+			$list = $div->find('tr');
+			foreach($list as $item) {
+				$link = $prefix . $item->find('td a', 0)->href;
+				$headline = trim($item->find('td a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'buzzfeed') {
+			$prefix = "http://online.wsj.com";
+			$div = $html->find('ul.result_list', 0);
+			$list = $div->find('li');
+			foreach($list as $item) {
+				$link = $prefix . $item->find('div.info h3 a', 0)->href;
+				$headline = trim($item->find('div.info h3 a', 0)->innertext);
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'guardianusa') {
+			$list = $html->find('div.#att-most-viewed ol li');
+			foreach($list as $item) {
+				$link = $item->find('a', 0)->href;
+				$headline = $item->find('a', 0)->innertext;
+				$image = $item->find('span.image-optional a img', 0);
+				if($image) {
+					$image = $image->src;
+				}
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		}
 		
+		// see if any didn't scrape
+		echo $this->_report_error($stories, $site);
+
+		// for debug
+		//echo '<pre>'; print_r($stories); die;
+
 		$stories = array_slice($stories, 0, 5); // only keep 5 items
 		return $stories;
+	}
+
+	function _report_error($stories, $name) {
+		if (empty($stories)) {
+			return "didn't find anything for " . $name . "<br />";
+		}
 	}
 
 	/*

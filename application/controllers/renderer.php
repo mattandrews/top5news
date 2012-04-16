@@ -6,6 +6,12 @@ class Renderer extends CI_Controller {
         //$this->output->cache(15); // 15 min cache. yay
         //$this->output->enable_profiler();
 
+        // todo: sniff URL as well as query string
+        $locale = 1;
+        if(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] == 'usa') {
+            $locale = 2;
+        }
+
         $this->load->library('prettydate');
         $this->load->helper(array('mobile', 'text'));
         $data['is_mobile'] = mobile_device_detect(true,false,true,true,true,true,true,false,false);
@@ -15,6 +21,7 @@ class Renderer extends CI_Controller {
                 LEFT OUTER JOIN news news2
                   ON (news1.source_id = news2.source_id AND news1.id < news2.id)
                 JOIN sources ON news1.source_id = sources.source_id
+                WHERE sources.locale_id = " . $locale . "
                 GROUP BY news1.id
                 HAVING COUNT(*) < 5
                 ORDER BY sources.sort_order, news1.source_id, rank ASC";
@@ -40,8 +47,18 @@ class Renderer extends CI_Controller {
             $custom_order = str_replace('item-', '', $custom_order);
             $custom_order = explode(',', $custom_order);
 
+            // doesn't show new ones added since cookie
             foreach($custom_order as $c) {
-                $data['news'][$c] = $data_temp[$c];
+                if(isset($data_temp[$c])) {
+                    $data['news'][$c] = $data_temp[$c];
+                    unset($data_temp[$c]);
+                }
+            }
+
+            if(!empty($data_temp)) {
+                foreach($data_temp as $name=>$d) {
+                    $data['news'][$name] = $d;
+                }
             }
 
         }
