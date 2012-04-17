@@ -7,7 +7,7 @@
 
     <meta charset="utf-8" />
 
-    <link href="<?php echo base_url(); ?>assets/css/top5news.css?v=2" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>assets/css/top5news.css?v=3" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/mobile.css?v=2" />
 
     <script type="text/javascript">
@@ -29,7 +29,11 @@
     <script>
       $(document).ready(function(){
         var links = [];
+        <?php if($locale == 1) { ?>
         var last_datestamp = "<?php echo $news['guardian'][0]['created']; ?>";
+        <?php } else if ($locale == 2) { ?>
+        var last_datestamp = "<?php echo $news['guardianusa'][0]['created']; ?>";
+        <?php } ?>
 
         $('div.newsbox a').each(function(i){
           links[i] = $(this).attr('href');
@@ -67,7 +71,7 @@
           stop: function(event, ui) {
             $('ul.sortable li').css('float', 'none');
             var serialize = $('#container').sortable('toArray');
-            $.cookie('top5news_custom_order', serialize, { expires: 365 });
+            $.cookie('top5news_custom_order_<?php echo $locale; ?>', serialize, { expires: 365 });
           }
         }).disableSelection();
 
@@ -77,8 +81,9 @@
 
 <body>
     <div id="container">
+
         <h1>Top 5 News</h1>
-        <p>The five most popular stories on the UK's most popular news websites. Feeds are refreshed every 15 minutes.<br />
+        <p>The five most popular stories on the <?php if($locale == 1) { echo "UK"; } else if ($locale == 2) { echo "USA"; } ?>'s most popular news websites. Feeds are refreshed every 15 minutes.<br />
         An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>. Why not <a href="https://twitter.com/Top5NewsUK">follow Top5News on Twitter</a>?</p>
 
         <p>Want custom ordering? Drag and drop a box to save your custom preference and we'll show it to you like that from now on.</p>

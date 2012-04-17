@@ -6,11 +6,12 @@ class Renderer extends CI_Controller {
         //$this->output->cache(15); // 15 min cache. yay
         //$this->output->enable_profiler();
 
-        // todo: sniff URL as well as query string
         $locale = 1;
-        if(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] == 'usa') {
+        if( (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] == 'usa') || 
+            (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'top5news.net')) {
             $locale = 2;
         }
+        $data['locale'] = $locale;
 
         $this->load->library('prettydate');
         $this->load->helper(array('mobile', 'text'));
@@ -33,14 +34,14 @@ class Renderer extends CI_Controller {
             $data['news'][$n['source_name']][] = $n;
         }
 
-        $meta = $this->meta();
+        $meta = $this->meta($locale);
         foreach($meta as $m) {
             $m['source_name'] = 'meta';
             $data['news']['meta'][] = $m;
         }
 
-        if(isset($_COOKIE['top5news_custom_order'])) {
-            $custom_order = $_COOKIE['top5news_custom_order'];
+        if(isset($_COOKIE['top5news_custom_order_' . $locale])) {
+            $custom_order = $_COOKIE['top5news_custom_order_' . $locale];
             $data_temp = $data['news'];
             unset($data['news']);
 
@@ -88,8 +89,10 @@ class Renderer extends CI_Controller {
         $this->db->insert('clicktracker', array('news_id' => $id));
     }
 
-    function meta() {
-        $sql = 'SELECT COUNT(clicktracker.news_id) AS num_clicks, news.*, sources.* FROM clicktracker JOIN news ON clicktracker.news_id = news.id JOIN sources ON news.source_id = sources.source_id GROUP BY clicktracker.news_id ORDER BY num_clicks DESC, date_clicked DESC LIMIT 5';
+    function meta($locale) {
+        $sql = 'SELECT COUNT(clicktracker.news_id) AS num_clicks, news.*, sources.* FROM clicktracker JOIN news ON clicktracker.news_id = news.id JOIN sources ON news.source_id = sources.source_id 
+            WHERE sources.locale_id = ' . $locale . ' GROUP BY clicktracker.news_id 
+            ORDER BY num_clicks DESC, date_clicked DESC LIMIT 5';
         $top_5_top_5 = $this->db->query($sql)->result_array();
         return $top_5_top_5;
     }

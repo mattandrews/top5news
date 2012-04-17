@@ -149,6 +149,65 @@ h2.meta {
     background: #e6e6e6 url(../img/icons/meta.png) no-repeat 8px 8px;
 }
 
+/* begin USA styles */
+
+h2.yahoonewsusa {
+    background: #e6e6e6 url(../img/icons/yahoo.png) no-repeat 8px 8px;
+}
+
+h2.cnn {
+    background: #e6e6e6 url(../img/icons/cnn.png) no-repeat 8px 8px;
+}
+
+h2.msnbc {
+    background: #e6e6e6 url(../img/icons/msnbc.png) no-repeat 8px 8px;
+}
+
+h2.nyt {
+    background: #e6e6e6 url(../img/icons/nyt.png) no-repeat 8px 8px;
+}
+
+h2.huffpo {
+    background: #e6e6e6 url(../img/icons/huffpo.png) no-repeat 8px 8px;
+}
+
+h2.fox {
+    background: #e6e6e6 url(../img/icons/fox.png) no-repeat 8px 8px;
+}
+
+h2.washpo {
+    background: #e6e6e6 url(../img/icons/washpo.png) no-repeat 8px 8px;
+}
+
+h2.latimes {
+    background: #e6e6e6 url(../img/icons/latimes.png) no-repeat 8px 8px;
+}
+
+h2.abc {
+    background: #e6e6e6 url(../img/icons/abc.png) no-repeat 8px 8px;
+}
+
+h2.usatoday {
+    background: #e6e6e6 url(../img/icons/usatoday.png) no-repeat 8px 8px;
+}
+
+h2.gawker {
+    background: #e6e6e6 url(../img/icons/gawker.png) no-repeat 8px 8px;
+}
+
+h2.wsj {
+    background: #e6e6e6 url(../img/icons/wsj.png) no-repeat 8px 8px;
+}
+
+h2.buzzfeed {
+    background: #e6e6e6 url(../img/icons/buzzfeed.png) no-repeat 8px 8px;
+}
+
+h2.guardianusa {
+    background: #e6e6e6 url(../img/icons/guardian.png) no-repeat 8px 8px;
+}
+
+
 form#email-form {
     background: #efefef;
     width: 500px;
