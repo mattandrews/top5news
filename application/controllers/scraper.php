@@ -187,8 +187,16 @@ class Scraper extends CI_Controller {
 			$div = $html->find('div#grid_21604548 div#cell2', 0);
 			$list = $div->find('div.story');
 			foreach($list as $item) {
-				$link = $item->find('h6 a', 0)->href;
-				$headline = $item->find('h6 a', 0)->innertext;
+				$firstlink = $item->find('h6 a', 0);
+				
+				// stupid icon image
+				if ($firstlink->class == 'icoNew') {
+					$link = $item->find('h6 a', 1)->href;
+					$headline = $item->find('h6 a', 1)->innertext;
+				} else {
+					$link = $item->find('h6 a', 0)->href;
+					$headline = $item->find('h6 a', 0)->innertext;
+				}
 				$image = NULL;
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
@@ -270,7 +278,7 @@ class Scraper extends CI_Controller {
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'buzzfeed') {
-			$prefix = "http://online.wsj.com";
+			$prefix = "http://www.buzzfeed.com";
 			$div = $html->find('ul.result_list', 0);
 			$list = $div->find('li');
 			foreach($list as $item) {
