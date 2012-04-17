@@ -220,11 +220,13 @@ class Scraper extends CI_Controller {
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
 		} elseif($site === 'fox') {
-			$div = $html->find('div.#chartbt_mod', 0);
-			$list = $div->find('li');
+			$div = $html->find('ul#chartbt_mod', 0);
+			$list = $div->find('li h3');
+			$prefix = 'http://www.';
+			//echo '<pre>'; echo $html; die;
 			foreach($list as $item) {
-				$link = $item->find('h3 a', 0)->href;
-				$headline = trim($item->find('h3 a', 0)->innertext);
+				$link = $prefix . $item->find('a', 0)->href;
+				$headline = trim($item->find('a', 0)->innertext);
 				$image = NULL;
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
