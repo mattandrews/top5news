@@ -3,6 +3,7 @@
 class Renderer extends CI_Controller {
     
     function index() {
+        // todo - break cache down by locale
         //$this->output->cache(15); // 15 min cache. yay
         //$this->output->enable_profiler();
 

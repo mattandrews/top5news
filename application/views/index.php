@@ -83,7 +83,7 @@
     <div id="container">
 
         <h1>Top 5 News</h1>
-        <p>The five most popular stories on the <?php if($locale == 1) { echo "UK"; } else if ($locale == 2) { echo "USA"; } ?>'s most popular news websites. Feeds are refreshed every 15 minutes.<br />
+        <p>The five most popular stories on <?php if($locale == 1) { echo "the UK"; } else if ($locale == 2) { echo "America"; } ?>'s most popular news websites. Feeds are refreshed every 15 minutes.<br />
         An experiment by <a href="http://www.benjilanyado.com/">Benji Lanyado</a> and <a href="http://mattandrews.info">Matt Andrews</a>. Why not <a href="https://twitter.com/Top5NewsUK">follow Top5News on Twitter</a>?</p>
 
         <p>Want custom ordering? Drag and drop a box to save your custom preference and we'll show it to you like that from now on.</p>
