@@ -149,6 +149,11 @@ h2.meta {
     background: #e6e6e6 url(../img/icons/meta.png) no-repeat 8px 8px;
 }
 
+h2.huffpouk {
+    background: #e6e6e6 url(../img/icons/huffpo.png) no-repeat 8px 8px;
+}
+
+
 /* begin USA styles */
 
 h2.yahoonewsusa {

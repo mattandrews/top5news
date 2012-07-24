@@ -108,8 +108,8 @@ class Scraper extends CI_Controller {
 			$div = $html->find('div.mostRead div ol', 0);
 			$list = $div->find('li');
 			foreach($list as $item) {
-				$link = $item->find('a', 0)->href;
-				$headline = $item->find('a', 0)->innertext;
+				$link = $item->find('a', 1)->href;
+				$headline = $item->find('a', 1)->innertext;
 				$image = NULL;
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
@@ -153,6 +153,16 @@ class Scraper extends CI_Controller {
 			foreach($list as $item) {
 				$link = $prefix . $item->find('h4 a', 0)->href;
 				$headline = $item->find('h4 a', 0)->innertext;
+				$image = NULL;
+				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
+			}
+		} elseif($site === 'huffpouk') {
+			$div = $html->find('div.snp_most_popular', 0);
+			$list = $div->find('div.snp_most_popular_entry');
+			foreach($list as $item) {
+				// offset for img
+				$link = $item->find('a.snp_entry_title', 0)->href;
+				$headline = trim($item->find('a.snp_entry_title', 0)->innertext);
 				$image = NULL;
 				$stories[] = array('link' => $link, 'headline' => $headline, 'image' => $image);
 			}
